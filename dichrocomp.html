@@ -1,0 +1,1931 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>DichroCompare</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link href="nouislider.min.css" rel="stylesheet">
+
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <script src='https://unpkg.com/mathjs@5.2.3/dist/math.min.js'></script>
+        <script src='https://cdn.jsdelivr.net/npm/jStat@1.7.1/dist/jstat.min.js'></script>
+        <script src="nouislider.min.js"></script>
+        
+
+        <style>
+        .noUi-horizontal .noUi-handle {
+        width: 10px;
+        height: 28px;
+        top: -6px;
+        }
+        html:not([dir=rtl]) .noUi-horizontal .noUi-handle {
+            right: -7px;
+            left: auto;
+        }
+        .noUi-handle:after, .noUi-handle:before {
+            display: none;
+        }
+        .noUi-handle:after, .noUi-handle:before {
+            display: none;
+        }
+        .lineplot {
+            width:500px;
+            height:400px;
+            padding:2px;
+            
+        }
+        .lineplotOL {
+            width:500px;
+            height:50px;
+            padding:2px;
+            
+        }
+        .heatmap {
+            width:500px;
+            height:500px;
+            padding:2px;
+            float:right;
+            
+        }
+        .inputfile {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position:absolute;
+            z-index: -1;
+            
+        }
+        .inputfile + label {
+            font-size: 1em;
+            font-weight: 700;
+            color: white;
+            background-color: rgb(180, 22, 22);
+            display: inline-block;
+            padding:2px;
+            border-radius: 12px;
+            border:none;
+        }
+
+        .inputfile:focus + label,
+        .inputfile + label:hover {
+            background-color: red;
+        }
+        .dc_logo{
+            
+            height:225px;
+            width:354px
+        }
+        .dc_logo_div{
+            text-align: center;
+        }
+        hr {
+            color: #dadddd;
+            background-color: #dadddd;
+        }
+        </style>
+    </head>
+    <body>
+        <div class="container" >
+            <!--[if lt IE 7]>
+                <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+            <![endif]-->
+            <div class="dc_logo_div">
+                <img class="dc_logo" src="Dichrocomp.jpg">
+            </div>
+           
+            <!-- <div class="accordion" id="accordionExample"> -->
+            
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-light" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        File Upload
+                        </button>
+                    </h5>
+                    </div>
+                    
+                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne">
+                    <div class="card-body">
+                            <h6>Click the 'Add Batch' button to select the files you want in the batch</h6>
+                            <hr>
+                        <div class="row">
+                                
+                            <div class="col-md-4">
+                                
+                                <div id="filelist"></div>
+                                
+                                
+                                <input type="file" id="fileinput" multiple title=" " class='inputfile' />
+                                <label for="fileinput">&nbspAdd&nbspBatch&nbsp</label>
+                            </div>
+                            <div class="col-md-8" id="summary" style="border-left: 1px solid #c8caca;display:none">
+                                <div  class="row" >
+                                    <div class="col">
+                                        <div id='batchFileListTitle'></div>
+                                        
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class='col-md-5'>
+                                       
+                                        <div id='batchFileList' style=" display:none;"></div>
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div id="plotly-divHmTrend" style="float:right"></div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <hr>
+                                        Estimation of SNR
+                                        <hr>
+                                        <div id="plotly-divRaw" style="float:right"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingTwo">
+                        <h5 class="mb-0">
+                        <button class="btn btn-light collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                            Options
+                        </button>
+                        </h5>
+                    </div>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <input class="" type="checkbox" value="" id="scale">
+                                    <label class="" for="scale">
+                                        Scale and zero data?
+                                    </label>
+                                </div>
+                                <div class="col-md-9">
+                                    Select wavelength range (nm): 
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <div id="wl-slider"></div>
+                                </div>
+                            </div>
+                            
+                            
+                            
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header" id="headingThree">
+                        <h5 class="mb-0">
+                        <button class="btn btn-light collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            Differences
+                        </button>
+                        </h5>
+                    </div>
+                    <div id="collapseThree" class="collapse" aria-labelledby="headingThree">
+                        <div class="card-body">
+                            
+                            <div class="row">
+                                <div class="col">
+                                    <div class="lineplot" id="plotly-div"></div>
+                                    <div class="lineplotOL" id="plotly-divOLap"></div>
+                                </div>
+                                
+                                <div class="col" style="border-left: 1px solid #c8caca;">
+                                    <div class="lineplot" id="plotly-div2"></div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col">
+                                    
+                                    
+                                    
+                                    <h5>Confidence level</h5>
+                                    <br><br>
+                                    <div id="alpha-slider"></div>
+                                    <hr>
+                                    <h1 id="score">NA% difference<br> <small><small>Add data above</small></small></h1>
+                                    
+                                    
+                                    
+                                </div>
+                                <div class="col" style="border-left: 1px solid #c8caca;">
+                                    <!-- <div style="float:right;width : 500px; height: 500px" > -->
+                                    <div id="plotly-divHm" style="float:right"></div>
+                                    <!-- </div> -->
+                                        
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            <!-- </div> -->
+                
+            <hr>
+            
+        </div>
+        
+
+        
+        <script>
+
+        /* 
+        NEED:
+
+        Function to read data from uploaded file and add to data array. -> adding batches.
+
+        Function to calculate Standard error and Confidence intervals with a given Confidence
+
+
+         */
+        // Stats functions
+        
+        function minRMSD(mean1,mean2){
+            let s_factor=1.0;
+            let dist_old=10000;
+            let dist =10;
+            while(dist_old>dist){
+                if(math.max(math.abs(mean1))>math.max(math.abs(mean2))){
+                    
+                }else{
+                    dist=math.distance(mean2, math.multiply(mean1, s_factor))
+                }
+                
+                dist_old=dist
+                s_factor+=0.001
+            }
+            
+            return(s_factor)
+        }
+        
+
+        Array.prototype.sum = Array.prototype.sum || function() {
+        return this.reduce(function(sum, a) { return sum + Number(a) }, 0);
+        }
+
+        Array.prototype.average = Array.prototype.average || function() {
+        return this.sum() / (this.length || 1);
+        }
+
+        var removeOptions=[
+             "select2d", "lasso2d", "resetScale2d",
+            "hoverClosestCartesian", "hoverCompareCartesian",
+            "zoom3d", "pan3d", "resetCameraDefault3d", "resetCameraLastSave3d", "hoverClosest3d",
+            "orbitRotation", "tableRotation",
+            "zoomInGeo", "zoomOutGeo", "resetGeo", "hoverClosestGeo",
+            
+            "sendDataToCloud",
+            "hoverClosestGl2d",
+            "hoverClosestPie",
+            "toggleHover",
+            "resetViews",
+            "toggleSpikelines",
+            "resetViewMapbox"
+            ]
+
+        
+        const transpose = m => m[0].map((x, i) => m.map(x => x[i]))
+
+        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".split("");
+        
+        var alpha=0.05
+
+        var batchCount= 0
+        // file stuff
+        var batches={}
+        var contents;
+        var cd_arr;
+        var wl_arr;
+
+        var scale_bool="false"
+
+        function removeBatch(e) {
+            let i=e.target.id;
+            
+            delete batches[String(i)]
+            
+            
+            document.getElementById(i+"-div").remove()
+            
+            
+            
+            delete data[String(i)]
+            
+            
+            
+            data_l=[];
+
+            Object.keys(data).forEach(function(key,index) {
+                // key: the name of the object key
+                // index: the ordinal position of the key within the object
+                
+                data_l.push(data[key])
+            });
+            data_hm=CIOverlap(batches)
+            Plotly.react('plotly-div', data_l, layout,{modeBarButtonsToRemove: removeOptions, displaylogo:false});
+            Plotly.react('plotly-div2', data_l, layout2,{modeBarButtonsToRemove: removeOptions, displaylogo:false});
+            //data_hm=twoSampleTtest()
+            document.getElementById("plotly-divRaw").setAttribute('style',"display:none")
+            document.getElementById("plotly-divHmTrend").setAttribute('style',"display:none")
+            document.getElementById("batchFileList").setAttribute('style',"display:none")
+            document.getElementById("batchFileListTitle").setAttribute('style',"display:none")
+            document.getElementById("summary").setAttribute('style',"display:none;border-left: 1px solid #c8caca;")
+            
+        }
+
+
+
+        function clearFileInput(ctrl) {
+            try {
+                ctrl.value = null;
+            } catch(ex) { }
+            if (ctrl.value) {
+                ctrl.parentNode.replaceChild(ctrl.cloneNode(true), ctrl);
+            }
+        }
+
+        function sort2Lists(a1,a2){
+            //1) combine the arrays:
+            var list = [];
+            for (var j = 0; j < a1.length; j++) 
+                list.push({'a1': a1[j], 'a2': a2[j]});
+
+            //2) sort:
+            list.sort(function(a, b) {
+                return ((a.a1 < b.a1) ? -1 : ((a.a1 == b.a1) ? 0 : 1));
+                //Sort could be modified to, for example, sort on the a2 
+                // if the a1 is the same.
+            });
+
+            //3) separate them back out:
+            for (var k = 0; k < list.length; k++) {
+                a1[k] = list[k].a1;
+                a2[k] = list[k].a2;
+            }
+            return({"a1":a1,"a2":a2})
+        }
+
+        var data_preview=[]
+
+        function getBatchInfo(el) {
+            document.getElementById("batchFileListTitle").setAttribute('style', 'display:visible')
+            document.getElementById("plotly-divRaw").setAttribute('style',"display:visible")
+            document.getElementById("plotly-divHmTrend").setAttribute('style',"display:visible")
+            document.getElementById("batchFileList").setAttribute('style',"display:visible")
+            document.getElementById("summary").setAttribute('style',"display:visible;border-left: 1px solid #c8caca;")
+            
+            let bkey=el.id.split("-")[0]
+            if(bkey!=bkey_old){
+
+                bkey_old=bkey
+                console.log(bkey)
+                let trend_info=batches[String(bkey)].trend
+
+                let flist=batches[String(bkey)].fileList
+
+                document.getElementById('batchFileList').innerHTML="<b><h6>Files:</h6></b><small>"+flist.join("<br>")+"<small>"
+                document.getElementById("batchFileListTitle").innerHTML="<h5>Batch "+String(bkey)+" Summary</h5><hr>"
+                let raw = batches[String(bkey)].files
+                data_preview=[]
+
+                for (i=0; i<flist.length;i++){
+                    data_preview.push({
+                        //x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
+                        //y: [5, 2.5, 5, 7.5, 5, 2.5, 7.5, 4.5, 5.5, 5], 
+                        x: raw[flist[i]].wl, 
+                        y: raw[flist[i]].cd, 
+                                            
+                        mode: "lines", 
+                        name: flist[i], 
+                        type: "scatter_gl",
+                        hoverinfo:"name+x+y",
+                        
+                    });
+                }
+
+                noise=math.multiply(math.dotDivide(batches[String(bkey)][scale_bool].std,math.max(batches[String(bkey)][scale_bool].mean)-math.min(batches[String(bkey)][scale_bool].mean)),100)
+                                
+                                
+                data_preview.push({
+                    //x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
+                    //y: [5, 2.5, 5, 7.5, 5, 2.5, 7.5, 4.5, 5.5, 5], 
+                    x: batches[String(bkey)].wl, 
+                    y: noise, 
+                    fill: 'tozeroy',       
+                    mode: "lines", 
+                    name: "Noise", 
+                    type: "scatter_gl",
+                    hoverinfo:"name+x+y",
+                    line:{
+                        color:"rgb(255, 20, 20)",
+                        width:1
+                        },
+                    /* marker:{
+                    color:"rgb(255, 20, 20)",
+                    
+                    } */
+                    
+                });
+
+                data_preview.push({
+                    //x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
+                    //y: [5, 2.5, 5, 7.5, 5, 2.5, 7.5, 4.5, 5.5, 5], 
+                    x: batches[String(bkey)].wl, 
+                    y: Array(noise.length).fill(math.median(noise)), 
+                                        
+                    mode: "lines", 
+                    name: "Av. Noise", 
+                    type: "scatter_gl",
+                    hoverinfo:"name",
+                    line:{
+                        color:"rgb(20, 20, 255)",
+                        width:2
+                        }
+                    
+                });
+
+                data_preview.push({
+                    //x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
+                    //y: [5, 2.5, 5, 7.5, 5, 2.5, 7.5, 4.5, 5.5, 5], 
+                    x: batches[String(bkey)].wl, 
+                    y: Array(noise.length).fill(math.median(noise)+math.std(noise)), 
+                                        
+                    mode: "lines", 
+                    name: "Stdev. Noise", 
+                    type: "scatter_gl",
+                    hoverinfo:"name",
+                    line:{
+                        color:"rgb(20, 255, 20)",
+                        width:2
+                        }
+                    
+                });
+
+                wl_shapes=[
+                    {
+                        type: "rect",
+                        xref: 'x',
+                        yref: 'paper',
+                        x0:minWL,
+                        y0:0,
+                        x1:wl_range[0],
+                        y1:1,
+                        fillcolor:"#d3d3d3",
+                        opacity:0.3,
+                        line: {
+                            width: 0
+                        }
+                    },
+                    { 
+                        type: "rect",
+                        xref: 'x',
+                        yref: 'paper',
+                        x0:wl_range[1],
+                        y0:0,
+                        x1:maxWL,
+                        y1:1,
+                        fillcolor:"#d3d3d3",
+                        opacity:0.3,
+                        line: {
+                            width: 0
+                        }
+                    }
+                ];
+
+                layoutPre.shapes=wl_shapes
+                
+                Plotly.react('plotly-divRaw',data_preview, layoutPre,{modeBarButtonsToRemove: removeOptions, displaylogo:false})
+
+                data_hm_trend = [
+                    {
+                        z: trend_info.z,
+                        x: trend_info.x,
+                        y: trend_info.y,
+                        type: 'heatmap',
+                        colorscale: [
+                            
+                            ['0.0', 'rgb(247, 43, 43)'],
+                            ['0.4', 'rgb(255, 255, 255)'],
+                            ['0.5', 'rgb(255, 255, 255)'],
+                            ['0.6', 'rgb(255, 255, 255)'],
+                            ['1.0', 'rgb(247, 43, 43)'],
+                        ],
+                        zmin:0,
+                        zmax:2
+                    }
+                ];
+
+                Plotly.react('plotly-divHmTrend',data_hm_trend, layoutHMTr,{modeBarButtonsToRemove: removeOptions, displaylogo:false})
+            }
+            
+            
+        }
+
+        var scale_chk=document.getElementById("scale")
+        scale_chk.checked=false
+
+        scale_chk.addEventListener('change',function(e){
+            scale_bool=String(e.target.checked)
+            Object.keys(batches).forEach(function(key,index) {
+                wl_slice = [batches[key].wl.indexOf(parseFloat(wl_range[1])), batches[key].wl.indexOf(parseFloat(wl_range[0]))]
+                let cd_arr_t = batches[key][scale_bool]["tcdarr"]
+                
+                confInt=[]
+                
+                for (k = 0; k<cd_arr_t.length;k++){
+                    
+                    confInt.push(jStat.tci(0, alpha, cd_arr_t[k])[1])
+                    
+                }
+                
+                //batches[key].confInt=confInt
+                batches[key][scale_bool].confInt=confInt
+
+                data[key]={
+                    //x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
+                    //y: [5, 2.5, 5, 7.5, 5, 2.5, 7.5, 4.5, 5.5, 5], 
+                    x: batches[key].wl.slice(wl_slice[0],wl_slice[1]), 
+                    y: batches[key][scale_bool].mean.slice(wl_slice[0],wl_slice[1]), 
+                    error_y: {
+                    type: 'data',
+                    array: batches[key][scale_bool].confInt.slice(wl_slice[0],wl_slice[1]),
+                    visible: true
+                    },
+                     
+                    mode: "lines", 
+                    name: "Batch: "+batches[key][scale_bool].name, 
+                    type: "scatter_gl",
+                    hoverinfo:"name+x",
+                    
+                };
+            });
+            data_l=[];
+
+            Object.keys(data).forEach(function(key,index) {
+                // key: the name of the object key
+                // index: the ordinal position of the key within the object
+                
+                data_l.push(data[key])
+            });
+            data_hm=CIOverlap(batches)
+            Plotly.react('plotly-div', data_l, layout,{modeBarButtonsToRemove: removeOptions, displaylogo:false});
+            Plotly.react('plotly-div2', data_l, layout2,{modeBarButtonsToRemove: removeOptions, displaylogo:false});
+
+        })
+
+        var errorFlag;
+        var wl_range=[-1,999999]
+        var minWL=-1;
+        var maxWL=999999;
+
+        function readMultipleFiles(evt) {
+            //Retrieve all the files from the FileList object
+            var files = evt.target.files; 
+            var numFiles_orig=0;
+            var numFiles=0;
+            let id=String(batchCount)
+            scale_bool=String(scale_chk.checked)
+            //store all cd and wl in 2d array for easy stats generation
+            cd_arr=Array()
+            wl_arr=Array()
+            f_arr=Array()
+            errorFlag=false;
+            
+            if (files) {
+
+                document.getElementById("plotly-divRaw").setAttribute('style',"display:visible")
+                document.getElementById("plotly-divHmTrend").setAttribute('style',"display:visible")
+                document.getElementById("batchFileList").setAttribute('style',"display:visible")
+                document.getElementById("batchFileListTitle").setAttribute('style',"display:visible")
+                document.getElementById("summary").setAttribute('style',"display:visible;border-left: 1px solid #c8caca;")
+                
+
+                batch={'files':{},
+                        'false':{'area':[]},
+                        'true':{'area':[]},
+                        'fileList':[]};
+                batches[id]={}
+                for (var i=0; i<files.length; i++) {
+                    f=files[i]
+                    
+                    
+                    var r = new FileReader();
+                    r.onload = (function(f) {
+                        return function(e) {
+                            contents = e.target.result.split("\n");
+                            numFiles+=1
+                            numFiles_orig+=1
+                            if(f.name.endsWith("dat")){
+                                
+                                const scanStartStr=" X  CD_Signal  CD_Error  CD_Current_(Abs)  CD_Delta_Absorbance  CD_Dynode  Jacket_Temp."
+                                let regex_numbers=/\-*\d+\.*\d+/g
+                                let regex_letters=/[A-DF-Za-df-z]/g
+                                let cd=[];
+                                let wl=[];
+                                let datStart=false;
+                                let datCount=numFiles-1
+                                for (j = 0; j < contents.length; j++){
+                                    //console.log(contents[j])
+                                    if(contents[j].includes("CD_Dynode")){
+                                        console.log("startString")
+                                        if(cd.length>0){
+                                            f_arr.push(f.name+"-"+datCount)
+                                            cd_arr.push(cd)
+                                            wl_arr.push(wl)
+                                            batch["files"][f.name+"-"+datCount]= {"cd":[],"wl":[]} ;
+                                            batch["files"][f.name+"-"+datCount].cd=cd
+                                            batch["files"][f.name+"-"+datCount].wl=wl
+                                            function areaUnderCurve(spec){
+                                                let spec_abs=math.abs(spec)
+                                                area=0
+                                                for (jjj=0;jjj<spec_abs.length-1;jjj++){
+                                                    area+=(spec_abs[jjj]+spec_abs[jjj+1])
+                                                }
+                                                return(area)
+                                            }
+
+                                            batch["false"]["area"].push(areaUnderCurve(cd))
+                                        }
+                                        datStart=true
+                                        datCount+=1
+                                        cd=[]
+                                        wl=[]
+
+                                    }else if(contents[j].includes("$ENDDATA")){
+                                        if(cd.length>0){
+                                            f_arr.push(f.name+"-"+datCount)
+                                            cd_arr.push(cd)
+                                            wl_arr.push(wl)
+                                            batch["files"][f.name+"-"+datCount]= {"cd":[],"wl":[]} ;
+                                            batch["files"][f.name+"-"+datCount].cd=cd
+                                            batch["files"][f.name+"-"+datCount].wl=wl
+                                            function areaUnderCurve(spec){
+                                                let spec_abs=math.abs(spec)
+                                                area=0
+                                                for (jjj=0;jjj<spec_abs.length-1;jjj++){
+                                                    area+=(spec_abs[jjj]+spec_abs[jjj+1])
+                                                }
+                                                return(area)
+                                            }
+
+                                            batch["false"]["area"].push(areaUnderCurve(cd))
+                                        }
+                                        datStart=false
+                                        
+                                        numFiles=datCount
+                                        
+                                    }else if(!contents[j].split(/[\s\t\,]+/).some(isNaN) && contents[j].split(/[\s\t\,]+/)[0]!=""){//regex_numbers.test(contents[j])===true && regex_letters.test(contents[j])===false && datStart===true){
+                                        line=contents[j].split(/[\s\t\,]+/)
+                                        //console.log(contents[j])
+                                        //console.log(line)
+                                        cd.push(parseFloat(line[1]))
+                                        wl.push(parseFloat(line[0]))
+                                        //console.log(line[0])
+                                    }
+                                }
+                            }else{
+                                batch["files"][String(f.name)]= {"cd":[],"wl":[]} ;
+                                let regex_numbers=/\-*\d+\.*\d+/
+                                let regex_letters=/[A-DF-Za-df-z]/g
+                                let cd=[]
+                                let wl=[]
+                                for (j = 0; j < contents.length; j++){
+                                    if(!contents[j].split(/[\s\t\,]+/).some(isNaN) && contents[j].split(/[\s\t\,]+/)[0]!=""){
+                                        line=contents[j].split(/[\s\t\,]+/)
+                                        //console.log(line)
+                                        cd.push(parseFloat(line[1]))
+                                        wl.push(parseFloat(line[0]))
+                                    }
+                                }
+                                
+                                f_arr.push(f.name)
+                                cd_arr.push(cd)
+                                wl_arr.push(wl)
+                                batch["files"][f.name].cd=cd
+                                batch["files"][f.name].wl=wl
+                                function areaUnderCurve(spec){
+                                    let spec_abs=math.abs(spec)
+                                    area=0
+                                    for (j=0;j<spec_abs.length-1;j++){
+                                        area+=(spec_abs[j]+spec_abs[j+1])
+                                    }
+                                    return(area)
+                                }
+
+                                batch["false"]["area"].push(areaUnderCurve(cd))
+                            }
+
+                            //console.log(contents[0])
+                            
+                            
+
+                            console.log(i)
+
+                            if(cd_arr[numFiles-1].some(isNaN) || wl_arr[numFiles-1].some(isNaN)){
+                                console.log("poop")
+                                errorFlag=true;
+                                delete batches[id]
+                                batchCount-=1
+                                if(batchCount<0){
+                                    batchCount=0
+                                }
+                                return(alert("There was a problem parsing your file: "+f.name+". Please ensure your files follow the formats specified in the Help section."))
+                                
+                            }
+                            
+                            
+                            //Area analysis - calculate data here
+                            
+                            
+
+                            console.log(i,numFiles)
+                            
+                            if(i==numFiles_orig && errorFlag===false){
+                                // check min/max wavelengths and also make sure wl_range is set to either those values OR the smaller range
+                                // previously set by user
+                                if(math.min(wl_arr)>minWL){
+                                    minWL=math.min(wl_arr)
+                                }
+                                if(math.max(wl_arr)<maxWL){
+                                    maxWL=math.max(wl_arr)
+                                }
+                                
+                                if(minWL>= wl_range[0]){
+                                    wl_range[0]=minWL
+                                }
+                                if(maxWL <= wl_range[1]){
+                                    wl_range[1]=maxWL
+                                }
+
+                                console.log([wl_arr[0][0], wl_arr[0][wl_arr[0].length-1]])
+                                slider_wl.noUiSlider.updateOptions({
+                                    range:{
+                                        'min':minWL,
+                                        'max':maxWL
+                                    }
+                                })
+                               
+                                slider_wl.noUiSlider.set([wl_range[0],wl_range[1]])
+                                console.log("pooooop")
+                                mean=math.mean(cd_arr, 0)
+                                batch["false"].mean=mean
+                                mean_z=math.subtract(mean.reverse(),mean.reverse()[0])
+                                mean_sc=math.divide(mean_z, math.max((mean_z)))
+                                batch["true"].mean=mean_sc
+                                batch.name=id
+                                batch["wl"]=wl_arr[0]
+                                batch["fileList"]=f_arr
+                                
+                                std=[]
+                                stderr=[]
+                                confInt=[]
+
+                                std_sc=[]
+                                stderr_sc=[]
+                                confInt_sc=[]
+                                
+                                let trendGrid = [...Array(numFiles).fill(0)].map(e => Array(numFiles).fill(0));
+
+                                let cd_arr_t_sc=transpose((math.divide(cd_arr,math.max(math.abs(mean)))))
+                                batch["true"]["tcdarr"]=cd_arr_t_sc
+
+                                let cd_arr_t=transpose(cd_arr)
+                                batch["false"]["tcdarr"]=cd_arr_t
+
+                                for (k = 0; k<cd_arr_t.length;k++){
+                                    
+                                    s=math.std(cd_arr_t[k])
+                                    std.push(s)
+                                    confInt.push(jStat.tci(0, alpha, cd_arr_t[k])[1])
+                                    
+                                    stderr.push((s/(math.sqrt(cd_arr_t[k].length))))
+
+                                    s=math.std(cd_arr_t_sc[k])
+                                    std_sc.push(s)
+                                    confInt_sc.push(jStat.tci(0, alpha, cd_arr_t_sc[k])[1])
+                                    
+                                    stderr_sc.push((s/(math.sqrt(cd_arr_t_sc[k].length))))
+                                    
+
+                                    // do o/e stuff here
+                                    let order=cd_arr_t[k]
+                                    let findex=Array.from(Array(cd_arr_t[k].length).keys())
+
+                                    sorted=sort2Lists(order,findex)
+                                    
+
+                                    for (q=0; q<sorted.a2.length;q++){
+                                        trendGrid[findex[q]][q]+=1
+                                    }
+                                }
+                                
+                                
+                                //batch.mean=mean
+                                batch["false"].std=std
+                                batch["false"].stderr=stderr
+                                batch["false"].snr=math.dotDivide(math.abs(mean),std)
+                                batch["true"].std=std_sc
+                                batch["true"].stderr=stderr_sc
+                                batch["true"].snr=math.dotDivide(math.abs(mean_sc),std_sc)
+                                //batch.confInt=confInt
+                                batch.name=id
+                                
+                                
+                                
+                                
+                                //batch.tcdarr_sc=math.divide(cd_arr_t, math.max(math.abs(mean)))
+                                batch["false"].confInt=confInt //math.divide(confInt, math.max(math.abs(mean)))
+                                batch["false"].cdarr=transpose(batch["false"].tcdarr)
+                                batch["true"].confInt=confInt_sc //math.divide(confInt, math.max(math.abs(mean)))
+                                batch["true"].cdarr=transpose(batch["true"].tcdarr)
+                                
+                                trend_x=[]
+                                for (jj=0;jj<numFiles;jj++){
+                                    
+                                    batch["true"]["area"].push(areaUnderCurve(batch["true"].cdarr[jj]))
+                                    trend_x.push("Pos "+(jj+1))
+                                }
+                                
+                                trend_z=math.divide(trendGrid,math.mean(trendGrid))
+
+                                bkey_old=String(id)
+
+                                document.getElementById('batchFileList').innerHTML="<b><h6>Files:</h6></b><small>"+f_arr.join("<br>")+"<small>"
+                                document.getElementById("batchFileListTitle").innerHTML="<h5>Batch "+String(id)+" Summary</h5><hr>"
+                
+                                let raw = batch.files
+                                data_preview=[]
+
+                                for (i=0; i<f_arr.length;i++){
+                                    data_preview.push({
+                                        //x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
+                                        //y: [5, 2.5, 5, 7.5, 5, 2.5, 7.5, 4.5, 5.5, 5], 
+                                        x: raw[f_arr[i]].wl, 
+                                        y: raw[f_arr[i]].cd, 
+                                                            
+                                        mode: "lines", 
+                                        name: f_arr[i], 
+                                        type: "scatter_gl",
+                                        hoverinfo:"name+x+y",
+                                        
+                                    });
+                                }
+                                noise=math.multiply(math.dotDivide(batch[scale_bool].std,math.max(batch[scale_bool].mean)-math.min(batch[scale_bool].mean)),100)
+                                
+                                
+                                data_preview.push({
+                                    //x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
+                                    //y: [5, 2.5, 5, 7.5, 5, 2.5, 7.5, 4.5, 5.5, 5], 
+                                    x: raw[f_arr[0]].wl, 
+                                    y: noise, 
+                                    fill: 'tozeroy',       
+                                    mode: "lines", 
+                                    name: "Noise", 
+                                    type: "scatter_gl",
+                                    hoverinfo:"name+x+y",
+                                    line:{
+                                        color:"rgb(255, 20, 20)",
+                                        width:1
+                                        },
+                                    /* marker:{
+                                    color:"rgb(255, 20, 20)",
+                                    
+                                    } */
+                                    
+                                });
+
+                                data_preview.push({
+                                    //x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
+                                    //y: [5, 2.5, 5, 7.5, 5, 2.5, 7.5, 4.5, 5.5, 5], 
+                                    x: raw[f_arr[0]].wl, 
+                                    y: Array(noise.length).fill(math.median(noise)), 
+                                                        
+                                    mode: "lines", 
+                                    name: "Av. Noise", 
+                                    type: "scatter_gl",
+                                    hoverinfo:"name",
+                                    line:{
+                                        color:"rgb(20, 20, 255)",
+                                        width:2
+                                        }
+                                    
+                                });
+
+                                data_preview.push({
+                                    //x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
+                                    //y: [5, 2.5, 5, 7.5, 5, 2.5, 7.5, 4.5, 5.5, 5], 
+                                    x: raw[f_arr[0]].wl, 
+                                    y: Array(noise.length).fill(math.median(noise)+math.std(noise)), 
+                                                        
+                                    mode: "lines", 
+                                    name: "Stdev. Noise", 
+                                    type: "scatter_gl",
+                                    hoverinfo:"name",
+                                    line:{
+                                        color:"rgb(20, 255, 20)",
+                                        width:2
+                                        }
+                                    
+                                });
+
+                                wl_shapes=[
+                                    {
+                                        type: "rect",
+                                        xref: 'x',
+                                        yref: 'paper',
+                                        x0:minWL,
+                                        y0:0,
+                                        x1:wl_range[0],
+                                        y1:1,
+                                        fillcolor:"#d3d3d3",
+                                        opacity:0.3,
+                                        line: {
+                                            width: 0
+                                        }
+                                    },
+                                    { 
+                                        type: "rect",
+                                        xref: 'x',
+                                        yref: 'paper',
+                                        x0:wl_range[1],
+                                        y0:0,
+                                        x1:maxWL,
+                                        y1:1,
+                                        fillcolor:"#d3d3d3",
+                                        opacity:0.3,
+                                        line: {
+                                            width: 0
+                                        }
+                                    }
+                                ];
+
+                                layoutPre.shapes=wl_shapes
+                                
+                                
+                                Plotly.react('plotly-divRaw',data_preview, layoutPre,{modeBarButtonsToRemove: removeOptions, displaylogo:false})
+
+                                batch.trend={"x":trend_x,
+                                            "y":f_arr,
+                                            "z":trend_z
+                                            }
+                                
+                                data_hm_trend = [
+                                    {
+                                        z: trend_z,
+                                        x: trend_x,
+                                        y: f_arr,
+                                        type: 'heatmap',
+                                        colorscale: [
+                                            
+                                            ['0.0', 'rgb(247, 43, 43)'],
+                                            ['0.4', 'rgb(255, 255, 255)'],
+                                            ['0.5', 'rgb(255, 255, 255)'],
+                                            ['0.6', 'rgb(255, 255, 255)'],
+                                            ['1.0', 'rgb(247, 43, 43)'],
+                                        ],
+                                        zmin:0,
+                                        zmax:2
+                                    }
+                                ];
+
+                                Plotly.react('plotly-divHmTrend',data_hm_trend, layoutHMTr,{modeBarButtonsToRemove: removeOptions, displaylogo:false})
+                                
+                                
+
+                                
+                                
+                                batches[String(id)]=(batch);
+                                
+                                // now add plots
+                                
+                                wl_slice = [batch.wl.indexOf(parseFloat(wl_range[1])), batch.wl.indexOf(parseFloat(wl_range[0]))]
+                                
+                                data[String(batchCount)]={
+                                    //x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
+                                    //y: [5, 2.5, 5, 7.5, 5, 2.5, 7.5, 4.5, 5.5, 5], 
+                                    x: batch.wl.slice(wl_slice[0],wl_slice[1]), 
+                                    y: batch[scale_bool].mean.slice(wl_slice[0],wl_slice[1]), 
+                                    error_y: {
+                                    type: 'data',
+                                    array: batch[scale_bool].confInt.slice(wl_slice[0],wl_slice[1]),
+                                    visible: true
+                                    },
+                                     
+                                    mode: "lines", 
+                                    name: "Batch: "+batch.name, 
+                                    type: "scatter_gl",
+                                    hoverinfo:"name+x",
+                                    
+                                };
+
+                                batchCount+=1
+                                
+                                data_l=[];
+
+                                Object.keys(data).forEach(function(key,index) {
+                                    // key: the name of the object key
+                                    // index: the ordinal position of the key within the object
+                                    
+                                    data_l.push(data[key])
+                                });
+                                
+                                data_hm=CIOverlap(batches)
+                                Plotly.react('plotly-div', data_l, layout,{modeBarButtonsToRemove: removeOptions, displaylogo:false});
+                                Plotly.react('plotly-div2', data_l, layout2,{modeBarButtonsToRemove: removeOptions, displaylogo:false});
+                                //data_hm=twoSampleTtest()
+                                
+                                
+                                flEl=document.getElementById("filelist");
+                                newDiv=document.createElement("div")
+                                newDiv.id=id+"-div"
+
+                                newTa=document.createElement("table")
+                                newTa.setAttribute("class", "table-hover")
+                                newTab=document.createElement("tbody")
+                                newTrow=document.createElement("tr")
+                                newTD1=document.createElement("td")
+                                newTD1.id=id+'-tab'
+                                newTD1.onclick=function(){getBatchInfo(this)}
+                                newTD2=document.createElement("td")
+                                newBtn=document.createElement("button")
+                                newBtn.id=id
+                                newBtn.setAttribute('class', 'btn btn-primary')
+                                newBtn.setAttribute('style', 'border: solid; border-color:white;border-width:2px')
+                                newBtn.addEventListener('click', removeBatch, false);
+                                newTD1.innerHTML=("<b>Batch "+id+": "+numFiles+" spectra</b>");
+                                //newTD1.appendChild(newContent2)
+                                newContent=document.createTextNode("Remove");
+                                newBtn.appendChild(newContent);
+                                
+                                brk=document.createElement("br");
+                                brk.id=id+"-brk"
+                                newTD2.appendChild(newBtn);
+                                //newDiv.appendChild(brk)
+                                newTrow.appendChild(newTD1)
+                                newTrow.appendChild(newTD2)
+                                newTab.appendChild(newTrow)
+                                newTa.appendChild(newTab)
+                                newDiv.appendChild(newTa)
+                                flEl.appendChild(newDiv)
+
+                                
+
+                                
+                            }
+
+                                
+                        };
+                    })(f);
+                    
+                    r.readAsText(f);
+                    
+                }
+                console.log(errorFlag)
+                
+                
+
+            } else {
+                alert("Failed to load files"); 
+            }
+            clearFileInput(document.getElementById('fileinput'));
+            
+        }
+
+        //Functions for parsing files
+
+        //Functions for doing stats
+
+        var slider_wl = document.getElementById('wl-slider');
+
+        noUiSlider.create(slider_wl, {
+            start: [0,1],
+            connect:true,
+            behaviour: 'drag',
+            range: {
+                'min': [0],
+                
+                'max': [1]
+            },
+            step: 1,
+            
+            tooltips:true
+        });
+
+        
+
+        slider_wl.noUiSlider.on('slide', function(){
+            wl_range = slider_wl.noUiSlider.get()
+            
+            
+            Object.keys(batches).forEach(function(key,index) {
+                wl_slice = [batches[key].wl.indexOf(parseFloat(wl_range[1])), batches[key].wl.indexOf(parseFloat(wl_range[0]))]
+                
+                //console.log((batches[key].wl[batches[key].wl.length-1]-wl_range[0]))
+                data[key]={
+                    //x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
+                    //y: [5, 2.5, 5, 7.5, 5, 2.5, 7.5, 4.5, 5.5, 5], 
+                    x: batches[key].wl.slice(wl_slice[0],wl_slice[1]), 
+                    y: batches[key][scale_bool].mean.slice(wl_slice[0],wl_slice[1]), 
+                    error_y: {
+                    type: 'data',
+                    array: batches[key][scale_bool].confInt.slice(wl_slice[0],wl_slice[1]),
+                    visible: true
+                    },
+                     
+                    mode: "lines", 
+                    name: "Batch: "+batches[key].name, 
+                    type: "scatter_gl",
+                    hoverinfo:"name+x",
+                    
+                };
+            });
+            data_l=[];
+
+            Object.keys(data).forEach(function(key,index) {
+                // key: the name of the object key
+                // index: the ordinal position of the key within the object
+                
+                data_l.push(data[key])
+            });
+            
+            wl_shapes=[
+                {
+                    type: "rect",
+                    xref: 'x',
+                    yref: 'paper',
+                    x0:minWL,
+                    y0:0,
+                    x1:wl_range[0],
+                    y1:1,
+                    fillcolor:"#d3d3d3",
+                    opacity:0.3,
+                    line: {
+                        width: 0
+                    }
+                },
+                { 
+                    type: "rect",
+                    xref: 'x',
+                    yref: 'paper',
+                    x0:wl_range[1],
+                    y0:0,
+                    x1:maxWL,
+                    y1:1,
+                    fillcolor:"#d3d3d3",
+                    opacity:0.3,
+                    line: {
+                        width: 0
+                    }
+                }
+            ];
+
+            layoutPre.shapes=wl_shapes
+            
+            Plotly.relayout('plotly-divRaw', layoutPre,{modeBarButtonsToRemove: removeOptions, displaylogo:false})
+
+            data_hm=CIOverlap(batches)
+            Plotly.react('plotly-div', data_l, layout,{modeBarButtonsToRemove: removeOptions, displaylogo:false});
+            Plotly.react('plotly-div2', data_l, layout2,{modeBarButtonsToRemove: removeOptions, displaylogo:false});
+        })
+
+        var slider_alpha = document.getElementById('alpha-slider');
+
+        noUiSlider.create(slider_alpha, {
+            start: 0.95,
+            
+            behaviour: 'drag',
+            range: {
+                'min': [0.75],
+                
+                'max': [0.99]
+            },
+            step: 0.01,
+            
+            tooltips:true
+        });
+
+        slider_alpha.noUiSlider.on('slide', function () {
+            
+            alpha = 1-slider_alpha.noUiSlider.get()
+            Object.keys(batches).forEach(function(key,index) {
+                wl_slice = [batches[key].wl.indexOf(parseFloat(wl_range[1])), batches[key].wl.indexOf(parseFloat(wl_range[0]))]
+                let cd_arr_t = batches[key][scale_bool]["tcdarr"]
+                
+                confInt=[]
+                
+                for (k = 0; k<cd_arr_t.length;k++){
+                    
+                    confInt.push(jStat.tci(0, alpha, cd_arr_t[k])[1])
+                    
+                }
+                
+                //batches[key].confInt=confInt
+                batches[key][scale_bool].confInt=confInt
+
+                data[key]={
+                    //x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
+                    //y: [5, 2.5, 5, 7.5, 5, 2.5, 7.5, 4.5, 5.5, 5], 
+                    x: batches[key].wl.slice(wl_slice[0],wl_slice[1]), 
+                    y: batches[key][scale_bool].mean.slice(wl_slice[0],wl_slice[1]), 
+                    error_y: {
+                    type: 'data',
+                    array: batches[key][scale_bool].confInt.slice(wl_slice[0],wl_slice[1]),
+                    visible: true
+                    },
+                     
+                    mode: "lines", 
+                    name: "Batch: "+batches[key].name, 
+                    type: "scatter_gl",
+                    hoverinfo:"name+x",
+                    
+                };
+            });
+            data_l=[];
+
+            Object.keys(data).forEach(function(key,index) {
+                // key: the name of the object key
+                // index: the ordinal position of the key within the object
+                
+                data_l.push(data[key])
+            });
+            data_hm=CIOverlap(batches)
+            Plotly.react('plotly-div', data_l, layout,{modeBarButtonsToRemove: removeOptions, displaylogo:false});
+            Plotly.react('plotly-div2', data_l, layout2,{modeBarButtonsToRemove: removeOptions, displaylogo:false});
+            //data_hm=twoSampleTtest()
+            
+
+        });
+
+        function rmsdPW() {
+            x=[]
+            y=[]
+            z=[]
+            
+            function rmsd(arr1,arr2) {
+                diff=math.subtract(arr1,arr2)
+                diff_2=math.square(diff)
+                diff_2_m=math.mean(diff_2)
+                diff_2_m_rt=math.sqrt(diff_2_m)
+
+                return(diff_2_m_rt)
+            }
+
+            batches_l=[]
+            Object.keys(batches).forEach(function(key,index) {
+                batches_l.push(batches[key])
+                x.push("Batch: "+String(batches[key].name))
+                y.push("Batch: "+String(batches[key].name))
+            });
+
+                // for each wavelength do pairwise t tests on 
+            for (j=0; j<batches_l.length;j++){
+                m1=batches_l[j][scale_bool].mean
+            
+                z2=[]
+                for (k=0; k<batches_l.length;k++){
+                    
+                    m2=batches_l[k][scale_bool].mean
+                    dist=rmsd(m1,m2)
+                    console.log(j,i,dist)
+                    
+                    z2.push(dist)
+                }
+                z.push(z2)
+            }
+            /* data_hm_new = [
+                {
+                    z: z,
+                    x: x,
+                    y: y,
+                    type: 'heatmap',
+                    colorscale: [
+                        
+                        
+                        ['0.0', 'rgb(19, 214, 45)'],
+                        ['0.15', 'rgb(240, 247, 43)'],
+                        ['0.4', 'rgb(247, 233, 44)'],
+                        ['0.6', 'rgb(247, 103, 37)'],
+                        ['1.0', 'rgb(247, 43, 43)']
+                    ],
+                    zmin:0,
+                    zmax:1
+                }
+            ]; */
+            return(z)
+            /* Plotly.react('plotly-divHm',data_hm_new, layoutHM,{modeBarButtonsToRemove: removeOptions, displaylogo:false})
+            return(data_hm_new) */
+            
+        }
+        
+
+        
+
+        function twoSampleTtest() {
+            x=[]
+            y=[]
+            z=[]
+
+            batches_l=[]
+            Object.keys(batches).forEach(function(key,index) {
+                batches_l.push(batches[key])
+                x.push("Batch: "+String(batches[key].name))
+                y.push("Batch: "+String(batches[key].name))
+            });
+
+
+
+            
+                // for each wavelength do pairwise t tests on 
+            for (j=0; j<batches_l.length;j++){
+                s1=batches_l[j][scale_bool].area
+            
+                n1=s1.length
+                m1=math.mean(s1)
+                v1=math.var(s1)
+                //console.log(j,s1,m1)
+                z2=[]
+                for (k=0; k<batches_l.length;k++){
+                    not_significant=0
+                    
+                    
+
+                    s2=batches_l[k][scale_bool].area
+                    
+                    n2=s2.length
+                    m2=math.mean(s2)
+                    v2=math.var(s2)
+                    dof=n1+n2-2
+                    
+                    t=(m1-m2)/math.sqrt((v1**2/n1)+(v2**2/n2))
+                    
+                    tcrit=jStat.studentt.inv( alpha, dof )
+                    console.log(j,s1,m2,k,s2,m2,tcrit,t)
+                    /* if(Math.abs(t)<Math.abs(tcrit)){
+                        not_significant+=1
+                    } */
+                    /* anova_p=jStat.anovaftest(s1,s2)
+                    
+                    if(anova_p>alpha){
+                        //
+                        not_significant+=1
+                    } */
+                
+                    
+                    z2.push(math.abs(tcrit)-math.abs(t))
+                }
+                z.push(z2)
+            }
+            data_hm_new = [
+                {
+                    z: z,
+                    x: x,
+                    y: y,
+                    type: 'heatmap',
+                    colorscale: [
+                        
+                        
+                        ['0.0', 'rgb(19, 214, 45)'],
+                        ['0.15', 'rgb(240, 247, 43)'],
+                        ['0.4', 'rgb(247, 233, 44)'],
+                        ['0.6', 'rgb(247, 103, 37)'],
+                        ['1.0', 'rgb(247, 43, 43)']
+                    ],
+                    /* zmin:0,
+                    zmax:1 */
+                }
+            ];
+            return(z)
+            /* Plotly.react('plotly-divHm',data_hm_new, layoutHM,{modeBarButtonsToRemove: removeOptions, displaylogo:false})
+            return(data_hm_new) */
+            
+        }
+
+        
+        var non_overlaps;
+
+        var score=0;
+        
+        var metric="confInt"
+        var mode={'confInt':{},
+                    'stderr':{}}
+        mode['confInt'].color="rgb(247, 43, 43)"
+        mode['confInt'].colorScale=[  
+                            ['0.0', 'rgb(19, 214, 45)'],
+                            ['0.15', 'rgb(240, 247, 43)'],
+                            ['0.4', 'rgb(247, 233, 44)'],
+                            ['0.6', 'rgb(247, 103, 37)'],
+                            ['1.0', 'rgb(247, 43, 43)']
+                        ]
+        mode['stderr'].color="rgb(19, 214, 45)"
+        mode['stderr'].colorScale=[  
+                            ['0.0', 'rgb(247, 43, 43)'],
+                            ['0.15', 'rgb(247, 103, 37)'],
+                            ['0.4', 'rgb(247, 233, 44)'],
+                            ['0.6', 'rgb(240, 247, 43)'],
+                            ['1.0', 'rgb(19, 214, 45)']
+                        ]
+        
+        
+        function CIOverlap(batches) {
+            
+            x=[]
+            y=[]
+            z=[]
+            batches_l=[]
+            Object.keys(batches).forEach(function(key,index) {
+                wl_slice = [batches[key].wl.indexOf(parseFloat(wl_range[1])), batches[key].wl.indexOf(parseFloat(wl_range[0]))]
+                batches_l.push(batches[key])
+            });
+
+            
+            
+            if(batches_l.length>1){
+
+                if(metric=="confInt"){
+                    non_overlaps=Array(batches_l[0].wl.length).fill(0)
+                }else if(metric=="stderr"){
+                    non_overlaps=Array(batches_l[0].wl.length).fill((batches_l.length*(batches_l.length-1)))
+                }
+                
+                
+                
+
+                for (i = 0; i<batches_l.length; i++){
+                    name1=batches_l[i].name
+                    m1=batches_l[i][scale_bool].mean.slice(wl_slice[0],wl_slice[1])
+                    c1=batches_l[i][scale_bool][metric].slice(wl_slice[0],wl_slice[1])
+
+                    m1plus=math.add(m1, c1)
+                    m1minus=math.subtract(m1, c1)
+                    x.push("Batch :"+name1)
+                    y.push("Batch :"+name1)
+                    z2=[]
+                    for (j = 0; j<batches_l.length; j++){
+                        
+                        m2=batches_l[j][scale_bool].mean.slice(wl_slice[0],wl_slice[1])
+                        c2=batches_l[j][scale_bool][metric].slice(wl_slice[0],wl_slice[1])
+                        
+                        m2plus=math.add(m2, c2)
+                        m2minus=math.subtract(m2, c2)
+                        overlap=0;
+                        
+                        for (k =0; k<m2.length;k++){
+                            if(m2minus[k]<=m1plus[k] && m2minus[k]>=m1minus[k]){
+                                
+                                overlap+=1
+                            }
+                            else if(m2plus[k]<=m1plus[k] && m2plus[k]>=m1minus[k]){
+                                overlap+=1
+                            }
+                            else if(m1minus[k]<=m2plus[k] && m1minus[k]>=m2minus[k]){
+                                
+                                overlap+=1
+                            }
+                            else if(m1plus[k]<=m2plus[k] && m1plus[k]>=m2minus[k]){
+                                overlap+=1
+                            }else{
+                                if(metric=="confInt"){
+                                    non_overlaps[k]+=1
+                                }else if(metric=="stderr"){
+                                    non_overlaps[k]-=1
+                                }
+                                
+                                
+                            }
+                            
+                        }
+                        if(metric=="confInt"){
+                            z2.push(1-(overlap/m2.length))
+                        }else if(metric="stderr"){
+                            console.log(overlap/m2.length)
+                            z2.push((overlap/m2.length))
+                        }
+                        
+                    }
+                    z.push(z2)
+                }
+
+                data_overlap=[{
+                    type: 'scattergl',
+                    fill: 'tozeroy',
+                    x: batches_l[0].wl.slice(wl_slice[0],wl_slice[1]),
+                    y: math.divide(non_overlaps,2),
+                    hoverinfo:'x+y',
+                    line: {color:mode[metric].color}
+                    
+                }]
+
+                layoutOL.yaxis.range=[0,math.max(math.divide(non_overlaps,2))]
+
+                Plotly.react('plotly-divOLap',data_overlap, layoutOL,{displayModeBar:false, displaylogo:false})
+                
+                if(metric=="stderr"){
+                    score=(((math.sum(z)-batches_l.length)/(batches_l.length**2-batches_l.length)))*1000
+                }
+                else if(metric=="confInt"){
+                    score=(((math.sum(z))/(batches_l.length**2-batches_l.length)))*1000
+                }
+                if(batches_l.length<2){
+                    score="NA"
+                    document.getElementById("score").innerHTML="NA% differen15ce<br> <small><small>Add data above</small></small>"
+                }else{
+                    if(metric=="confInt"){
+                        score=String(Math.round(score)/10)
+                        document.getElementById("score").innerHTML=score+"<small>% difference<br><small>with "+(1-alpha)*100+"% confidence</small></small>"
+                    }else{
+                        score=String(Math.round(score)/10)
+                        document.getElementById("score").innerHTML=score+"<small>% Similarity<br><small>with 95% confidence</small></small>"
+                    }
+                    
+                }
+
+                
+                
+                data_hm = [
+                    {
+                        z: z,
+                        x: x,
+                        y: y,
+                        type: 'heatmap',
+                        colorscale: /* [
+                            
+                            
+                            ['0.0', 'rgb(19, 214, 45)'],
+                            ['0.15', 'rgb(240, 247, 43)'],
+                            ['0.4', 'rgb(247, 233, 44)'],
+                            ['0.6', 'rgb(247, 103, 37)'],
+                            ['1.0', 'rgb(247, 43, 43)']
+                        ] */mode[metric].colorScale,
+                        zmin:0,
+                        zmax:1
+                    }
+                ];
+
+                Plotly.react('plotly-divHm',data_hm, layoutHM,{modeBarButtonsToRemove: removeOptions, displaylogo:false})
+                
+                
+                /* layout.shapes=shape_layout
+                layout2.shapes=shape_layout */
+                /* data["bar"]=
+                    {
+                        x: batches_l[0].wl,
+                        y: non_overlaps,
+                        type: 'bar'
+                    }; */
+                //Plotly.react('plotly-divBp',data_b,{modeBarButtonsToRemove: removeOptions, displaylogo:false}p)
+
+                return(data_hm)
+            }
+            else{
+                score="NA"
+                document.getElementById("score").innerHTML="NA% difference<br> <small><small>Add data above</small></small>"
+                data_overlap=[{
+                    type: 'scattergl',
+                    fill: 'tozeroy',
+                    x: [],
+                    y: [],
+                    hoverinfo:'x+y',
+                    line: {color:'rgb(247, 43, 43)'}
+                    
+                }]
+
+                layoutOL.yaxis.range=[0,1]
+
+                Plotly.react('plotly-divOLap',data_overlap, layoutOL,{displayModeBar:false, displaylogo:false})
+
+                data_hm = [
+                    {
+                        z: [],
+                        x: [],
+                        y: [],
+                        type: 'heatmap',
+                        colorscale: [
+                            
+                            
+                            ['0.0', 'rgb(19, 214, 45)'],
+                            ['0.15', 'rgb(240, 247, 43)'],
+                            ['0.4', 'rgb(247, 233, 44)'],
+                            ['0.6', 'rgb(247, 103, 37)'],
+                            ['1.0', 'rgb(247, 43, 43)']
+                        ],
+                        zmin:0,
+                        zmax:1
+                    }
+                ];
+
+                Plotly.react('plotly-divHm',data_hm, layoutHM,{modeBarButtonsToRemove: removeOptions, displaylogo:false})
+            }
+        }
+
+        
+        //Functions for drawing graphs
+        
+        document.getElementById('fileinput').addEventListener('change', readMultipleFiles, false);
+
+        var data = {};
+
+        
+        
+        data[String(batchCount)]={
+            //x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 
+            //y: [5, 2.5, 5, 7.5, 5, 2.5, 7.5, 4.5, 5.5, 5], 
+            x: [], 
+            y: [],
+
+             
+            mode: "lines", 
+            name: "Premium", 
+            type: "scatter_gl",
+            hoverinfo:"name+x",
+            
+        };
+        batchCount+=1
+        
+        
+        var layout = {
+            paper_bgcolor: "rgb(255,255,255)", 
+            plot_bgcolor: "rgb(255,255,255)", 
+            autosize:false,
+            width:500,
+            height:400,
+            margin:{
+                t:15,
+                b:50,
+                r:30,
+                l:50
+            },
+            hovermode:'closest',
+            showlegend:false,
+            xaxis: {
+                gridcolor: "rgb(229,229,229)",  
+                showgrid: true, 
+                showline: false, 
+                showticklabels: true, 
+                tickcolor: "rgb(127,127,127)", 
+                ticks: "outside", 
+                zeroline: true
+            }, 
+            yaxis: {
+                gridcolor: "rgb(229,229,229)", 
+                showgrid: true, 
+                showline: false, 
+                showticklabels: true, 
+                tickcolor: "rgb(127,127,127)", 
+                ticks: "outside", 
+                zeroline: true
+            }
+        
+        };
+
+        var layoutOL = {
+            paper_bgcolor: "rgb(255,255,255)", 
+            plot_bgcolor: "rgb(255,255,255)", 
+            autosize:false,
+            width:500,
+            height:50,
+            
+            margin:{
+                t:0,
+                b:0,
+                r:30,
+                l:50
+            },
+            hovermode:'closest',
+            showlegend:false,
+            xaxis: {
+                gridcolor: "rgb(229,229,229)",  
+                showgrid: false, 
+                showline: false, 
+                showticklabels: false, 
+                tickcolor: "rgb(127,127,127)", 
+                ticks: "outside", 
+                zeroline: false
+            }, 
+            yaxis: {
+                range:[0,1],
+                gridcolor: "rgb(229,229,229)", 
+                showgrid: false, 
+                showline: false, 
+                showticklabels: false, 
+                tickcolor: "rgb(127,127,127)", 
+                ticks: "", 
+                zeroline: false
+            }
+        
+        };
+
+        var layoutPre = {
+            paper_bgcolor: "rgb(255,255,255)", 
+            plot_bgcolor: "rgb(255,255,255)", 
+            autosize:false,
+            width:600,
+            height:450,
+            margin:{
+                t:15,
+                b:50,
+                r:30,
+                l:50
+            },
+            hovermode:'closest',
+            showlegend:false,
+            xaxis: {
+                gridcolor: "rgb(229,229,229)",  
+                showgrid: true, 
+                showline: false, 
+                showticklabels: true, 
+                tickcolor: "rgb(127,127,127)", 
+                ticks: "outside", 
+                zeroline: true
+            }, 
+            yaxis: {
+                gridcolor: "rgb(229,229,229)", 
+                showgrid: true, 
+                showline: false, 
+                showticklabels: true, 
+                tickcolor: "rgb(127,127,127)", 
+                ticks: "outside", 
+                zeroline: true
+            }
+        
+        };
+
+        
+
+        var layout2 = {
+            paper_bgcolor: "rgb(255,255,255)", 
+            plot_bgcolor: "rgb(255,255,255)", 
+            autosize:false,
+            width:500,
+            height:400,
+            margin:{
+                t:15,
+                b:50,
+                r:30,
+                l:50
+            },
+            hovermode:'closest',
+            showlegend:false,
+            dragmode: 'pan',
+            xaxis: {
+                gridcolor: "rgb(229,229,229)", 
+                
+                showgrid: true, 
+                showline: false, 
+                showticklabels: true, 
+                tickcolor: "rgb(127,127,127)", 
+                ticks: "outside", 
+                zeroline: true,
+            }, 
+            yaxis: {
+                
+                gridcolor: "rgb(229,229,229)", 
+                showgrid: true, 
+                showline: false, 
+                showticklabels: true, 
+                tickcolor: "rgb(127,127,127)", 
+                ticks: "outside", 
+                zeroline: true,
+            }
+        
+        };
+
+        var layoutHM={
+            autosize:false,
+            width:400,
+            height:400,
+            /* margin:{
+                t:50,
+                b:50,
+                r:50,
+                l:50
+            }, */
+            automargin:true
+            
+        }
+        var layoutHMTr={
+            autosize:true,
+            width:400,
+            height:400,
+            /* margin:{
+                t:30,
+                b:50,
+                r:30,
+                l:100
+            }, */
+            xaxis:{automargin:true},
+            yaxis:{automargin:true, tickangle:45},
+            title: "File-Magnitude O/E"
+            
+        }
+
+        var data_hm = [
+            {
+                z: [],
+                x: [],
+                y: [],
+                type: 'heatmap',
+                colorscale: [
+                    
+                    
+                    ['0.0', 'rgb(19, 214, 45)'],
+                    ['0.15', 'rgb(240, 247, 43)'],
+                    ['0.4', 'rgb(247, 233, 44)'],
+                    ['0.6', 'rgb(247, 103, 37)'],
+                    ['1.0', 'rgb(247, 43, 43)']
+                ],
+                zmin:0,
+                zmax:1
+            }
+        ];
+
+        data_overlap=[{
+            type: 'scattergl',
+            fill: 'tozeroy',
+            x: [],
+            y: [],
+            hoverinfo:'x+y',
+            line: {color:'rgb(247, 43, 43)'}
+            
+        }]
+
+        Plotly.react('plotly-divOLap',data_overlap, layoutOL,{displayModeBar:false, displaylogo:false})
+
+        Plotly.plot('plotly-divHm',data_hm, layoutHM,{modeBarButtonsToRemove: removeOptions, displaylogo:false})
+
+        var data_l=[];
+
+        Object.keys(data).forEach(function(key,index) {
+            // key: the name of the object key
+            // index: the ordinal position of the key within the object
+            
+            data_l.push(data[key])
+        });
+
+        plot1=Plotly.plot('plotly-div', data_l, layout,{modeBarButtonsToRemove: removeOptions, displaylogo:false});
+        plot2=Plotly.plot('plotly-div2', data_l, layout2,{modeBarButtonsToRemove: removeOptions, displaylogo:false});
+        //plotHM = Plotly.newPlot('plotly-divHm', data_hm, layoutHM,{modeBarButtonsToRemove: removeOptions, displaylogo:false});
+
+        var myPlot = document.getElementById('plotly-div')
+        var myPlot2 = document.getElementById('plotly-div2')
+        var myPlotHm = document.getElementById('plotly-divHm')
+        var myPlotOL = document.getElementById('plotly-divOLap')
+
+        myPlot.on('plotly_click', function(data){
+            let update = data.points.map(function(d){
+                return ({
+                    'xaxis.range' : [d.x-5, d.x+5],
+                    'yaxis.range' : [d.y-(d['error_y.array'])*4, d.y+(d['error_y.array'])*4],
+                    
+                    });
+            });
+            
+            var newRange=[10000000000,-10000000000]
+            for (i=0;i<update.length;i++){
+                
+                if(update[i]['yaxis.range'][0]<=newRange[0]){
+                    
+                    newRange[0]=update[i]['yaxis.range'][0]
+                }
+                if(update[i]['yaxis.range'][1]>=newRange[1]){
+                    newRange[1]=update[i]['yaxis.range'][1]
+                }
+            }
+
+            newUpdate={
+                'xaxis.range':update[0]['xaxis.range'],
+                'yaxis.range':newRange
+            }
+
+            
+            Plotly.relayout('plotly-div2',newUpdate,{modeBarButtonsToRemove: removeOptions, displaylogo:false});
+            //Plotly.restyle('plotly-div2',{},{modeBarButtonsToRemove: removeOptions, displaylogo:false});
+            
+            
+        });
+        
+        
+        </script>
+
+        
+        
+    </body>
+</html>

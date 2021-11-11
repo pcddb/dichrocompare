@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>DichroCompare</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="nouislider.min.css" rel="stylesheet">
+
+    <script src="plotly-latest.min.js"></script>
+    <script src="sg_bundle.js"></script>
+    <script src="sgg_bundle.js"></script>
+    <script src="jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <script src='math.min.js'></script>
+    <script src='jstat.min.js'></script>
+    <script src="nouislider.min.js"></script>
+    <script src="wNumb.js"></script>
+    <script src="fminsearch.js"></script>
+
+
+    <style>
+        .tg {
+            border-collapse: collapse;
+            border-spacing: 0;
+            border-color: #ccc;
+        }
+
+        .tg td {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            padding: 10px 5px;
+            border-style: solid;
+            border-width: 0px;
+            overflow: hidden;
+            word-break: normal;
+            border-top-width: 1px;
+            border-bottom-width: 1px;
+            border-color: #ccc;
+            color: #333;
+            background-color: #fff;
+        }
+
+        .tg th {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            font-weight: normal;
+            padding: 10px 5px;
+            border-style: solid;
+            border-width: 0px;
+            overflow: hidden;
+            word-break: normal;
+            border-top-width: 1px;
+            border-bottom-width: 1px;
+            border-color: #ccc;
+            color: #333;
+            background-color: #f0f0f0;
+        }
+
+        .tg .tg-0lax {
+            text-align: left;
+            vertical-align: top
+        }
+
+        div.plotly-notifier {
+            visibility: hidden;
+        }
+
+        .noUi-marker-horizontal.noUi-marker-large {
+
+            height: 10px;
+            margin-left: 1px;
+
+        }
+
+        .noUi-value {
+            position: absolute;
+            white-space: nowrap;
+            text-align: center;
+            font-size: small;
+        }
+
+        tr.selected {
+            background-color: rgb(155, 155, 155);
+            color: #FFF;
+        }
+
+        .card-header {
+            padding: 1px 1px 1px 1px;
+
+        }
+
+        .btn-secondary {
+            font-weight: 700;
+            color: white;
+            background-color: #365f92;
+            border-color: #365f93;
+            padding: 1px 3px 1px 3px;
+
+            text-align: left;
+        }
+
+        .noUi-horizontal .noUi-handle {
+            width: 10px;
+            height: 28px;
+            top: -6px;
+        }
+
+        html:not([dir=rtl]) .noUi-horizontal .noUi-handle {
+            right: -7px;
+            left: auto;
+        }
+
+        .noUi-handle:after,
+        .noUi-handle:before {
+            display: none;
+        }
+
+        .noUi-handle:after,
+        .noUi-handle:before {
+            display: none;
+        }
+
+        .lineplot {
+            width: 500px;
+            height: 400px;
+            padding: 2px;
+
+        }
+
+        .lineplotOL {
+            width: 500px;
+            height: 50px;
+            padding: 2px;
+
+        }
+
+        .heatmap {
+            width: 500px;
+            height: 500px;
+            padding: 2px;
+            float: right;
+
+        }
+
+        .inputfile {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+
+        }
+
+        .inputfile+label {
+            font-size: 1em;
+            font-weight: 700;
+            color: white;
+            background-color: rgb(180, 22, 22);
+            display: inline-block;
+            padding: 2px;
+            border-radius: 12px;
+            border: none;
+        }
+
+
+        .inputfile:active+label,
+        .inputfile+label:hover {
+            background-color: red;
+        }
+
+        .dc_logo {
+
+            height: 118px;
+            width: 354px
+        }
+
+        .dc_logo_div {
+            text-align: center;
+        }
+
+        hr {
+            color: #dadddd;
+            background-color: #dadddd;
+        }
+
+        .dot {
+
+            height: 50px;
+            width: 50px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+
+        }
+
+        .container-fluid {
+            /* min-width: 1350px;
+        max-width: 1350px; */
+            width: 1300px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <!--[if lt IE 7]>
+                <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+            <![endif]-->
+        <div class="dc_logo_div">
+            <img class="dc_logo" src="Dichrocomp.jpg">
+            <br>
+            <a href="index.html">Home</a> | <a href="dichrocompare.html">Dichrocompare</a> | <a href="thermocompare.html">ThermoCompare</a>
+        </div>
+        <div class="card" >
+            <div class="card-body">
+            <h6>This is the help page for DichroCompare and ThermoCompare. Click the tabs below to get the information for each site.</h6>
+            
+            </div>
+        </div>
+        <br>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="dcomp-tab" data-toggle="tab" href="#dcomp" role="tab" aria-controls="dcomp"
+                    aria-selected="true">DichroCompare Help</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="tcomp-tab" data-toggle="tab" href="#tcomp" role="tab"
+                    aria-controls="tcomp" aria-selected="false">ThermoCompare Help</a>
+            </li>
+            
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="dcomp" role="tabpanel" aria-labelledby="dcomp-tab">
+                <div class="row" style="width:100%; margin:auto">
+                    <div class="col">
+                         <br>
+                        <h4>Input Files</h4>
+
+                        <p>To start analysing files using DichroCompare, you need to upload one or more batches of CD spectra.</p>
+
+                        <p>A batch is 2 or more raw CD spectra. These should be of the same exact sample, taken during the same experiment i.e. different scans of the same CD run. Averaged spectra are not suitable and the analysis will not work as expected.</p>
+
+                        <p>To add a batch, click the red "Add Batch" button in the Input Files pane. A pop up will appear with a variety of options pertaining to your data.</p>
+
+                        <p>You should choose the correct units for your raw CD data, as we convert all spectra to units of dE during the upload process. The options are delta epsilon, Machine units and mean residue ellipticity (MRE). If your input data is in MRE, you will also have to provide information on the concentration of your sample (mg/ml), the pathlength of the cell used (cm) and the mean residue weight of the sample.</p>
+
+                        <p>There is another option, called ".DCS" file. This is a DichroCompare session file, which will be described below</p>
+
+                        <p>You are also given the option to upload a set of buffer files. This can be done by clicking the "Select Buffer Files" button. One or more buffer files can be added. These will be averaged and automatically subtracted from the CD spectra in the batch. It is assumed that buffer measurements were taken with the same experimental conditions as the sample spectra i.e. wavelength range, units etc.</p>
+
+                        <p>Once you have selected your options, click the "Run Analysis" button to start the analysis and add the batch.</p>
+
+                        <h5>Within Batch analysis and information</h5>
+
+                        <p>The batch  will appear in the list on the left hand side of the Input Files pane. Each batch is assigned a colour, which will be used throughout to identify it in plots and tables. It will be assigned a name of "Batch X", where "X" is the number of batches uploaded in this session + 1. Next to the name  is a button that lets you remove the batch. Next to that is a download symbol. Clicking this lets you download a .dcf file which contains all the information needed to upload the batch again in the future. Finally, a checkbox allows you to activate/deactivate the batch in the analysis without fully removing the batch. Unticking the box means DichroCompare will ignore the batch - it is just like removing the batch completely, but means you can quickly reactivate it by just ticking the box.</p>
+
+                        <p>When you add a batch, information about the batch is shown on the right hand side of the Input Files pane. This information can also be seen for a specific batch by clicking on its name in the list on the left hand side.</p>
+
+                        <p>The first bit of information shown is a list of all the files in the batch. You can activate/deactivate individual files just like you can batches - a 6 file batch with one file deactivated will be analysed as a 5 file batch. Activation and deactivation will trigger recalculation of all results. A minimum of 2 files is needed to consitute a batch, so if only 2 files are active the tickboxes will be greyed out until a third file is activated. Each file is also assigned a colour that will identify it in plots found in this section.</p>
+
+                        <p>Three tabs are found to the right of the file list. </p>
+
+                        <p>The first is the Noise Estimation tab. A plot of the each spectra in the batch is shown. Each trace is coloured according to the colour assigned to the file in the file list. Also shown is an area plot (pale red) which is an estimate of the noise in your samples. This is calculated using a model trained on the variation of CD signal and HT voltage in >300 SRCD spectra obtained from the PCDDB (see paper). A blue line indicating a threshold value is also plotted, above which noise is judged to be detrimental to the analysis. The % of data points greater than the threshold is displayed to the right of the plot. The % of "Data used" is also shown - this corresponds to the overall area of the plot with the currently selected wl range. We calculate it this way as regions with higher signal are more valuable for the analysis due to their higher signal to noise ratios and information content.</p>
+
+                        <p>The noise % is used to weight the final score. Differences are less likely to be found in noisy data, due to the higher variance/spread of the observed data. Therefore we penalise high noise by reducing the score. For the best analysis, remove noisy wavelengths using the wavelength range slider.</p>
+
+                        <p>The second tab has information about possible outliers in the batch. At each wavelength, each data point is tested using the Chauvenet criterion against other data points in the batch to see if it is an outlier. Hovering over any of the coloured circles will tell you what wavelength corresponds to the outlier data point. The number of outliers in the whole batch is then plotted as a stack plot. If a particular file has >10% outliers i.e. 1/10th of its wavelengths have potentially outlying data points, the file name is coloured red where it appears on the website.</p>
+
+                        <code>WARNING! The outlier analysis is only meant as guidance. Careful consideration of the data is required before removing any files - so don't automatically remove a file if >10% of the data points are called outliers by the webserver, look for another reason - e.g. if removing a file dramatically reduces noise in the batch, it might be a good idea to remove the file to improve the analysis.</code>
+                        <br><br>
+                        <p>The third tab contains a plot showing the raw uploaded buffer files, as well as the buffer names, if they were uploaded.</p>
+
+                        <h5>DichroCompare Session Files (.DCS)</h5>
+
+                        <p>Below the batch list, next to the Add Batch button, there is a button that says "Download Session File". Clicking this button will download a text file with a .dcs extension that acts as a "save state" for your current analysis. It contains all information about the uploaded batches, which batches are active, which files within batches are active, and all current settings including whether QC mode is active and what reference set is defined (see below for a description). Uploading a .DCS file will restore your analysis to the point it was at when the file was created, all options are data preserved.</p>
+
+                        <p>It is designed to be used for archival purposes, for the sharing of data between collaborators/colleagues, or for the creation of reference sets/analysis - with the aim of reducing time wasted and ensuring analyses are carried out in a consistent manner across organisations and time.</p>
+
+                         <br>
+                        <h4>Options Pane</h4>
+
+                        <h5>Zeroing and Scaling</h5>
+
+                        <p>A large number of options can be set that will affect the analysis. For all these options, changing or setting the values will trigger recalculation of the results automatically.</p>
+
+                        <p>The first set of options on the left hand side are to do with scaling and zeroing the data. Checking "Scale Data?" will scale the mean spectra of each batch to the magnitude of the largest batch mean spectra in the whole dataset by RMSD minimisation. The scale factors chosen for each batch will be seen in a list that appears when this option is chosen.</p>
+
+                        <p>To zero data, select the wavelength range between which you want to zero the spectra, and check the box. If scaling and zeroing are chosen, the data will be zeroed prior to scaling to ensure the best fit. You can also choose to zero at wavelengths that fall outside the current wavelength range selection e.g. if the batch has data from 180-270 nm, you can still zero between 260-270 nm if you have used the wavelength range slider to trim the data to 190-250 nm.</p>
+
+                        <p>The scores that result from scaling shouldn't be used to indicate your samples are different or not - instead scaling is intended to allow you to quickly check whether sample concentration might be main factor in poor similarity between batches. We would always recommend measuring the sample concentration again as accurately as possible if you find concentration to be the issue.</p>
+
+                        <h5>Deviation Threshold and Wavelength range.</h5>
+
+                        <p>The deviation threshold can be set using the number input. We use this number to adjust the score penalty applied when a significant difference is found at a specific wavelength. For example, if two batches are found to differ significantly at a specific wavelength, the base penalty is 1/(length of wl range)*1000. The distance in dE between the two points is calculated and the term distance/(deviation threshold) is used to weight the penalty by multiplication. </p>
+                        
+                        <pre>
+                        penalty = 10
+                        distance= 0.8
+                        deviation threshold = 2
+                        weighted penalty = (0.8/2) * 10 = 0.4 * 10 = 0.4
+                        </pre>
+                        <p>This allows for a consideration of effect size when determining how different two spectra are. A significant difference does not necessarily mean that distance is big enough to be of interest/important for your specific application - use your domain knowledge to determine an appropriate deviation threshold.</p>
+
+                        <!-- <p>The confidence level slider is found below the deviation threshold input. This slider goes from 80% up to 99.9%. The confidence level is used in the calculation of confidence intervals when determining the significance of the difference between batch means. It refers specifically to the confidence that two batch means are DIFFERENT - therefore setting the value to 80% means you will see more significant differences than you would at 90% or 99.9%. As with the deviation threshold, choose the confidence level that best suits your specific application.</p> -->
+
+                        <p>The final option is the wavelength range slider. This allows you to trim data that you don't wish to include in the analysis. You can trim data from both the high and low ends of the range using the handles, and the selection can be moved by clicking and dragging the blue slider. Changes to the wavelength range automatically affect all batchs in the analysis.</p>
+
+                        <p>The wavelength slider is particularly useful for removing noisy wavelengths, and for reducing the amount of "zero-signal" spectral regions present in your sample e.g. wavelengths in 260 nm+ in far-UV spectra of protein samples, where the signal-to-noise ratio is very low which can lead to deceptively high scores.</p>
+
+                        <p>Upon first uploading a batch, we would recommend trimming high wavelengths from the data using the slider while maintaining "Data Used" above 99%. This will remove as much of the "zero signal" data from the dataset as possible. Then, remove low wavelength data (which is typically where noisy wavelengths are found) to try and bring the noise % for the batch to zero. Do this for every subsequent batch uploaded for best results.</p>
+
+                         <br>
+                        <h4>Results Pane</h4>
+
+                        <p>The Results pane is presented in two rows - in the following section, each element of the results will be described row by row, left to right. For all the plots, figures and results the information displayed will automatically update when changes are made to the options or batches by the user. Most of the plots have extra information that can be accessed by hovering over data points in the form of tooltips. You can save any of the plots by clicking the small camera icon that can be seen next to each plot. Some plots have more options for further manipulation of the view, which will be explained in more depth below.</p>
+
+                        <h5>Mean Spectra</h5>
+
+                        <p>This plot shows the mean spectra for each batch. The colour of each trace corresponds to the colour assigned to a specific batch in the batch list at the top of the page. Hovering over a data point will show a tool tip with the wavelength and which batch that specific data point is from.</p>
+
+                        <p>You can zoom and pan around this plot using the options in the bar just above the plot. The default is the Zoom tool (magnifying glass) which allows you to zoom into a box you draw on the plot by clicking and dragging. You can zoom in using the "+" icon on the menu, and out with the "-" icon. Clicking the pan tool lets you pan around the plot by clicking and dragging. Finally you can reset the axes by clicking the Reset Axes button - this will automatically change the range of the x and y axis to fit all the data in the plot window.</p>
+
+                        <p>This plot is linked programatically to the Difference Spectra plots. This means that zooming or panning around the Mean spectra plot will trigger the same changes in the Difference Spectra plots, ensuring that the source of the data you are looking at for all plots stays consistent.</p>
+
+                        <h5>Pairwise Heatmaps</h5>
+
+                        <p>There are two heatmaps displayed with show pairwise comparisons between batches. The first is the Pairwise % of different wavelengths heatmap. The % of wavelengths which are different for every possible pairwise comparison of batches is shown, with the % indicated by a colour scale, going from green for zero differences up to red for 100% different. </p>
+
+                        <p>The second heatmap is similar, but shows the root mean squared deviation for every possible pairwise comparison of batches. This RMSD is slightly modified in that for any wavelength which is NOT found to be significantly different, the distance is set to 0 dE. This means that the final RMSD value is calculated as the sum of all squared significant differences between batch means, divided by the total number of wavelength points in the range analysed, before finally the square root is taken. The RMSD is indicated using a colour scale, from green for an RMSD of 0 to red for values equal to or greater than the deviation threshold defined in the options pane.</p>
+
+                        <p>For both heatmaps, hovering over any of the squares will show a tooltip with information about which batches are being compared as well as either the % different or RMSD.</p>
+
+                        <h5>Difference Spectra</h5>
+
+                        <p>The difference spectra is shown on the left hand side of the second row of the results pane. The absolute difference between batch means at each wavelength along with one-sided confidence intervals at a 99% confidence level is calculated for each batch vs all other batches. At each wavelength, for every pair, the lower bound is calculated: (the difference between means) - (confidence interval). Two batches are considered significantly different at a particular wavelength if this lower bound > 0 - i.e. the difference is significantly MORE than zero. </p>
+
+                        <p>The lower bound is plotted as the difference spectra. The plot only shows lower bound values >0 as the plot is designed to only display where significant differences occur.</p>
+
+                        <p>The difference spectra is only displayed for one batch at a time vs all other batches. You can change which batch you want to see plots for by selecting its radio button in the Summary table to the right of the plot. The trace colours correspond to the batch with which the chosen batch is being compared.</p>
+
+                        <p>Below this plot is a histogram which plots the total number of significant differences found at each wavelength for the chosen batch. This provides an at-a-glance overview of the wavelength regions where the larges number of differences are found.</p>
+
+                        <h5>Summary</h5>
+
+                        <p>The summary section provides a large amount of information about each batch in tabulated form, the overall scores, and also contains the options for the Quality Control (QC) mode. The information and options available change depending on whether this mode is active - below is a description of what you will see if its on or if its off.</p>
+
+                        <p><i>With QC mode off</i></p>
+
+                        <p>If the QC mode checkbox is off (which is the default), a table will be shown where each row corresponds to information about a specific batch. From left to right, the columns are:
+
+                        <ul>
+                        <li>Choice of batch for display in the differnce spectra plot</li>
+                        <li>The batch name and colour</li>
+                        <li>The av % of significant differences between the batch and all other batches</li>
+                        <li>The av RMSD between the batch and all other batches</li>
+                        <li>The av DichroCompare Score between the batch and all other batches</li>
+                        </ul>
+
+                        <p>Also shown is the overall score of the entire dataset out of 1000, in the bottom right hand corner. A coloured circle is used as a visual aid, with green being good, yellow being poor and red bad. This provides an overall idea of how different/similar the batches are on aggregate.</p>
+
+                        <p><i>With QC mode on</i></p>
+
+                        <p>Quality Control (QC) mode is designed to allow a reference set of "good" batches to be defined against which new samples can be compared. These reference set batches are samples you know are acceptable in the context of your use case i.e. biosimilars, industrial protein production, crystallographic studies etc.</p>
+
+                        <p>A reference set allows the definition of an acceptance region of DichroCompare scores. If a new samples scores vs the reference set is in this acceptance region, it is probable that the new sample batch is also "good" - i.e. the new sample is similar to the reference set so is also acceptable for your specific use case.</p>
+
+                        <p>If the QC mode checkbox is on, a table will be shown where each row corresponds to information about a specific batch. From left to right, the columns are:
+
+                        <ul>
+                        <li>Choice of batch for display in the differnce spectra plot</li>
+                        <li>The batch name and colour</li>
+                        <li>The av % of significant differences between the batch and the batches in the reference set</li>
+                        <li>The av RMSD between the batch and the batches in the reference set</li>
+                        <li>The av DichroCompare Score between the batch and the batches in the reference set</li>
+                        <li>A checkbox indicating whether a batch is in the Reference set or not</li>
+                        </ul>
+
+                        <p>If a batch is in the reference set, the statistics shown are derived from comparisons between it and all other reference set batches, not including itself. Reference set batches will be indicated by blue text. If a batch is NOT in the reference set, the statistics are derived between it and only the batches in the reference set. </p>
+
+                        <p>E.g. if you had 5 batches, 1-3 in the reference set, 4 and 5 not. 4 would be compared with 1, 2 and 3 but NOT 5.</p>
+
+                        <p>The Overall score is replaced with two different summarising scores. The first describes the lower bound of the 2 Sigma acceptance region. This is calculated by taking the average and standard deviation of the reference batches scores in the table above. The lower bound score can then be calculated by taking the average score - 2 * standard deviation of the scores. We recommend at least 3 batches are chosen so you have a non-zero value for the standard deviation. More batches in the reference set will also give you a more accurate estimate of the population mean and standard deviation.</p>
+
+                        <p>We then compare each of the non-reference set batches, or test batches, scores found in the table against this lower bound. If any of the scores are below this threshold, we consider the test batch to differ too much from the reference set and flag it by colouring its text in the table red.</p>
+
+                        <p>The overall average score of all test batches vs the reference set is shown as the "Test Score". This shows, in aggregate, how your test batches compare to the reference set. </p>
+
+                        <h4>DichroCompare Score</h4>
+
+                        <p>The DichroCompare score is calculated as follows:</p>
+
+                        <p>The absolute distance between the mean spectra of the batches being compared is calculated at each wavelength. Significance of the difference between means is calculated using the 99% confidence interval.</p>
+
+                        <p>Any distance greater than the deviation threshold is set to be equal to said threshold. Any difference not found to be significant is set to be equal to 0.</p>
+
+                        <p>The modified distances are then divided by the deviation threshold to yield numbers between 0 and 1. These are then averaged to give a single number between 0 and 1, which we will call "X".</p>
+
+                        <p>The average noise % across the batches between compared is obtained and divded by 100 to yield a value between  0 and 1, which we will call W.</p>
+
+                        <p>The final score is found using the following equation:</p>
+
+                        <pre>Final Score = (1000 - (1000 * X)) * W</pre>
+
+                        <p>This yields a number out of 1000, 1000 being the best possible score. The score is weighted by the noise % to penalise the tendency of noisy data to give unrealisitcally high scores.</p>
+
+
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="tab-pane fade" id="tcomp" role="tabpanel" aria-labelledby="tcomp-tab">
+                <div class="row" style="width:100%; margin:auto">
+                    <div class="col">
+                        <br>
+                        <h4>Input Files</h4>
+
+                        <p>To start analysing files using ThermoCompare, you need to upload one or more batches of CD spectra.</p>
+
+                        <p>A batch is 2 or more processed spectra which constitute a thermal melt experiment. By processed spectra, we mean the averaged with (ideally) an averaged baseline subtracted and spectra zeroed at an appropriate wavelength. 
+
+                        <p>To add a batch, click the red "Add Batch" button in the Input Files pane. A pop up will appear with a variety of options pertaining to your data.</p>
+
+                        <p>You should choose the correct units for your raw CD data, as we convert all spectra to units of dE during the upload process. The options are delta epsilon, Machine units and mean residue ellipticity (MRE). If your input data is in MRE, you will also have to provide information on the concentration of your sample (mg/ml), the pathlength of the cell used (cm) and the mean residue weight of the sample.</p>
+
+                        <p>There is another option, called ".TCS" file. This is a ThermoCompare session file, which will be described below</p>
+
+                        <p>Once you have selected your options, click the "Run Analysis" button to start the analysis and add the batch.</p>
+
+
+                        <h5>Within Batch analysis and information</h5>
+
+                        <p>The batch  will appear in the list on the left hand side of the Input Files pane. Each batch is assigned a colour, which will be used throughout to identify it in plots and tables. It will be assigned a name of "Batch X", where "X" is the number of batches uploaded in this session + 1. Next to the name  is a button that lets you remove the batch. Next to that is a download symbol. Clicking this lets you download a .tcf file which contains all the information needed to upload the batch again in the future. Finally, a checkbox allows you to activate/deactivate the batch in the analysis without fully removing the batch. Unticking the box means ThermoCompare will ignore the batch - it is just like removing the batch completely, but means you can quickly reactivate it by just ticking the box.</p>
+
+                        <p>When you add a batch, information about the batch is shown on the right hand side of the Input Files pane. This information can also be seen for a specific batch by clicking on its name in the list on the left hand side.</p>
+
+                        <p>The first bit of information shown is a list of all the files in the batch. Next to each file is a number input which allows you to set the temperature at which each spectra was taken. By default we set the first file in a set of batches to 20 C and increase the temperature for each subsequent file by 5 C. You can also define a temperature interval to quickly set the temperatures of all spectra using the "Temp. Step" box. Set the value and hit apply to make the change.</p>
+
+                        <p>In order to compare batches, we require the number of files in each batch to be the same, and the temperature regime defined to be identical. This means that setting the temperatures for one batch will automatically change all other batches. If you try and upload a batch with a different number of spectra to a previously uploaded batch, an alert will pop up informing you of the error and the batch will not be uploaded.</p>
+
+                        <p>To the right of the file list, the CD spectra of all files in the selected batch is shown. Mousing over each trace will give the x and y coordinates as well as the file it is from so you can check your data has uploaded correctly.</p>
+
+                        <h5>ThermoCompare Session Files (.TCS)</h5>
+
+                        <p>Below the batch list, next to the Add Batch button, there is a button that says "Download Session File". Clicking this button will download a text file with a .dcs extension that acts as a "save state" for your current analysis. It contains all information about the uploaded batches, which batches are active, which files within batches are active, and all current settings including temperature regime chosen. Uploading a .TCS file will restore your analysis to the point it was at when the file was created, all options are data preserved.</p>
+
+                        <p>It is designed to be used for archival purposes, for the sharing of data between collaborators/colleagues, or for the creation of reference sets/analysis - with the aim of reducing time wasted and ensuring analyses are carried out in a consistent manner across organisations/teams and time.</p>
+
+                        <h4>Options Pane</h4>
+
+                        <h5>Scaling</h5>
+
+                        <p>A large number of options can be set that will affect the analysis. For all these options, changing or setting the values will trigger recalculation of the results automatically.</p>
+
+                        <p>The first set of options on the left hand side are to do with scaling and zeroing the data. Checking "Scale?" will scale the largest spectra (i.e. spectra with the highest CD signal) in each batch to the magnitude of the largest spectra in the whole dataset by RMSD minimisation. The scale factors obtained for each batch are then applied to all spectra in each batch, and will be seen in a list that appears when this option is chosen.</p>
+
+                        <p>The scores that result from scaling shouldn't be used to indicate your samples are different or not - instead scaling is intended to allow you to quickly check whether sample concentration might be main factor in poor similarity between batches. We would always recommend measuring the sample concentration again as accurately as possible if you find concentration to be the issue.</p>
+
+                        <h5>Deviation Threshold, Polynomial Order and Wavelength range.</h5>
+
+                        <p>The deviation threshold in dE can be set using the number input. This value provides a maximum value for defining the score penalty applied when a difference is measured between two data points. See below for information on how the score is calculated for more information.</p>
+
+                        <p>The polynomial order setting is used to define what order polynomial will be used when fitting the melt curves generated by the software. We recommend starting at a lower value and watching the fit at a wavelength like 191nm or 222nm as you increase it - stop when the fit looks acceptable and describes the overall shape of the data. Check both the normal unprocessed CD and first derivative fits. Try to avoid overfitting of your data, which can occur when using high order polynomials, as this can give you misleading results.</p>
+
+                        <p>The final option is the wavelength range slider. This allows you to trim data that you don't wish to include in the analysis. You can trim data from both the high and low ends of the range using the handles, and the selection can be moved by clicking and dragging the blue slider. Changes to the wavelength range automatically affect all batchs in the analysis.</p>
+
+                        <p>The wavelength slider is particularly useful for removing noisy wavelengths, and for reducing the amount of "zero-signal" spectral regions present in your sample e.g. wavelengths at 260nm+ in far-UV spectra of protein samples, where the signal-to-noise ratio is very low which can lead to deceptively high scores.</p>
+
+                        <p>Upon first uploading a batch, we would recommend trimming high wavelengths from the data using the slider. This will remove as much of the "zero signal" data from the dataset as possible.</p>
+
+                        <h4>Results Pane</h4>
+
+                        <p>Starting from the top-left, you will see a heatmap. This heatmap shows the averaged differences between batches at each wavelength and temperature. The y axis is the temperature in degrees celsius, from low temperatures at the bottom to high temperatures at the top. The x-axis is the wavelength in nm. The degree of difference is indicated by the colour of any given point on the heatmap. Green areas indicate very low or no difference, yellow indicates a moderate difference between batches and red indicates a difference near or greater than the deviation threshold set in the options pane. Hovering over the heatmap will show information on the average difference between batches observed at that specific wavelength and temperature. The wavelength and temperature selected will be indicated in the top right of the results section, and lines will be overlaid on the heatmap with their interesection indicating the specific values selected.</p>
+
+                        <p>You can select the comparison you want to see plotted on the heatmap using the dropdown menus above the plot. You can compare all batches against all other batches, a single batch vs all batches, or two single batches against each other. In QC mode (see below) you can additionally compare the reference set and test set (if defined) against each other and against other batches. If the reference set or the test set are undefined, the all vs all comparison will be shown by default, and a warning will be shown indicating that you should define the sets in order to do the reference vs test comparisons.</p>
+
+                        <p>The selection made using these dropdowns won't affect the score, just the heatmap data - if you want to add or remove a batch's influence on the score use the checkboxes in the Batch List at the top of the page.</p>
+
+                        <p>You can switch between the unprocessed CD differences and the differences found between the first derivatives of the spectra with respect to temperature using the radio buttons on the top-right. As differences between the first derivatives are much smaller than those found between the unmodified CD spectrum, the deviation threshold is corrected to 1/6 its defined value when viewing this version of the spectra. The first derivative can be useful for finding subtle differences in the shape of melt curves, and allows for estimation of a melting temperature (Tm) for each batch.</p>
+
+                        <p>The heatmap is primarily meant to be used as a visual aid for quickly identifying regions of interest for you as a researcher. To further investigate said differences, click on a point of interest in the heatmap to show the CD spectra of batches selected for comparison at that temperature and the melt curves of the same for comparison at that wavelength. These are shown in the plots below the heatmap. The colour of the traces correspond to the colours assigned to each batch in the list in the Input Data pane. The melt curve plots have both the discrete CD signal at each temperature as well as the fitted curve which uses the polynomial order defined in the options pane. Switching between "CD" and "first derivative" will be reflected in the data plotted for the melt curve. 
+
+                        <p>If the CD plots or melt curves are plotted i.e. a selection has been made using the heatmap, you can also click on data points in these plots to update the wavelength or temperature selected. This will automatically update all the plots and overlays to reflect the new selection.</p>
+
+                        <h5>Summary</h5>
+
+                        <p>The summary section provides a large amount of information about each batch in tabulated form, the overall scores, and also contains the options for the Quality Control (QC) mode. The information and options available change depending on whether this mode is active - below is a description of what you will see if its on or if its off.</p>
+
+                        <p><i>With QC mode off</i></p>
+
+                        <p>If the QC mode checkbox is off (which is the default), a table will be shown where each row corresponds to information about a specific batch. From left to right, the columns are:
+
+                        <ul>
+                        <li>The batch name and colour</li>
+                        <li>The estimated Tm of the batch at the selected wavelength</li>
+                        <li>The av RMSD between the batch and all other batches using non-derivative CD data</li>
+                        <li>The av RMSD between the batch and all other batches using the first-derivative with respect to temperature</li>
+                        <li>The av ThermoCompare Score between the batch and all other batches</li>
+                        </ul>
+
+                        <p>Also shown is the overall score of the entire dataset out of 1000, in the bottom right hand corner. A coloured circle is used as a visual aid, with green being good, yellow being poor and red bad. This provides an overall idea of how different/similar the batches are on aggregate.</p>
+
+                        <p><i>With QC mode on</i></p>
+
+                        <p>Quality Control (QC) mode is designed to allow a reference set of "good" batches to be defined against which new samples can be compared. These reference set batches are samples you know are acceptable in the context of your use case i.e. biosimilars, industrial protein production, crystallographic studies etc.</p>
+
+                        <p>A reference set allows the definition of an acceptance region of ThermoCompare scores. If a new samples scores vs the reference set is in this acceptance region, it is probable that the new sample batch is also "good" - i.e. the new sample has similar thermal behaviour to the reference set so is also acceptable for your specific use case.</p>
+
+                        <p>If the QC mode checkbox is on, a table will be shown where each row corresponds to information about a specific batch. From left to right, the columns are:
+
+                        <ul>
+                        <li>The batch name and colour</li>
+                        <li>The estimated Tm of the batch at the selected wavelength</li>
+                        <li>The av RMSD between the batch and all batches in the reference set using non-derivative CD data</li>
+                        <li>The av RMSD between the batch and all batches in the reference set using the first-derivative with respect to temperature</li>
+                        <li>The av DichroCompare Score between the batch and the batches in the reference set</li>
+                        <li>A checkbox indicating whether a batch is in the Reference set or not</li>
+                        </ul>
+
+                        <p>If a batch is in the reference set, the statistics shown are derived from comparisons between it and all other reference set batches, not including itself. Reference set batches will be indicated by blue text. If a batch is NOT in the reference set, the statistics are derived between it and only the batches in the reference set. 
+
+                        <p>E.g. if you had 5 batches, 1-3 in the reference set, 4 and 5 not. 4 would be compared with 1, 2 and 3 but NOT 5.</p>
+
+                        <p>The Overall score is replaced with two different summarising scores. The first describes the lower bound of the 2 Sigma acceptance region. This is calculated by taking the average and standard deviation of the reference batches scores in the table above. The lower bound score can then be calculated by taking the average score - 2 * standard deviation of the scores. We recommend at least 3 batches are chosen so you have a non-zero value for the standard deviation. More batches in the reference set will also give you a more accurate estimate of the population mean and standard deviation.</p>
+
+                        <p>We then compare each of the non-reference set batches, or test batches, scores found in the table against this lower bound. If any of the scores are below this threshold, we consider the test batch to differ too much from the reference set and flag it by colouring its text in the table red.</p>
+
+                        <p>The overall average score of all test batches vs the reference set is shown as the "Test Score". This shows, in aggregate, how your test batches compare to the reference set. 
+
+                        <h4>ThermoCompare Score</h4>
+
+                        <p>The scores shown on the site are calculated as follows:
+
+                        <p>First, the differences between the batches being compared are calculated for both the non-derivative CD data and the first derivative data at every temperature and wavelength combination. 
+
+                        <p>For the CD differences, any difference greater than the deviation threshold are set to be equal to said threshold, and then all values are divided by the threshold to give a value between 0 and 1 for every wavelength/temperature combination. These are then averaged to get a single value between 0 and 1.</p>
+
+                        <p>The same is done for the first-derivative differences, except the threshold used is 1/6 of the defined deviation threshold due to the smaller differences found in this analysis.</p>
+
+                        <p>The contributions from each comparison are weighted so 90% of the score comes from the CD data comparison, and 10% comes from the first derivative comparison. We found this produced the best scores for determining similarity of melts.</p>
+
+                        <p>A final score out of 1000, 1000 being the best score, is obtained with the following equation:
+
+                        <pre>Final Score = 1000 - (900 * CD data diff fraction) - (900 * 1st deriv. diff fraction)</pre>
+
+
+
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+
+
+        <br>
+        <footer class="py-4 bg-light text-black-50">
+            <div class="container text-center">
+                2019 Dr Elliot Drew and Dr R.W. Janes, <i>Queen Mary, University of London</i>
+            </div>
+        </footer> 
+
+</body>
+
+</html>
